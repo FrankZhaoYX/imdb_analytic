@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0                    # Use MySQL 8.0 image
+    container_name: mysql_server
+    environment:
+      MYSQL_ROOT_PASSWORD: admin  # Set a secure password
+      MYSQL_DATABASE: IMDB_db             # Create a database named 'IMDB_db'
+      MYSQL_USER: admin               # Create a user named 'admin'
+      MYSQL_PASSWORD: admin       # Password for 'admin'
+    volumes:
+      - mysql_data:/var/lib/mysql        # Persist MySQL data
+    ports:
+      - "3306:3306"
+
+  python-app:
+    build: ./app                         # Build the Python app using the Dockerfile
+    container_name: IMDB_analysis_project
+    volumes:
+      - ./app:/usr/src/app               # Mount the local app directory
+    working_dir: /usr/src/app
+    depends_on:
+      - mysql                            # Ensure MySQL starts first
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_USER: root
+      MYSQL_PASSWORD: admin
+      MYSQL_DATABASE: IMDB_db
+
+volumes:
+  mysql_data:
