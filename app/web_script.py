@@ -104,7 +104,43 @@ def metadata_scrape(url):
     review = reviews_raw.find_all('span', class_='score')
     # print(review[0].get_text())
     reviews.append(review[0].get_text())
-   
+
+def scrape_mv(container):
+    # Scrape the name
+    name = container.find('h3', class_ = 'ipc-title__text').get_text()
+    names.append(name)
+    print(name)
+    # Scrape the metadata
+    # metadata_set = container.find_all('span', class_ = 'sc-b189961a-8 hCbzGp dli-title-metadata-item')
+    metadata_set = container.find_all('span', class_ = "sc-ab348ad5-8 cSWcJI dli-title-metadata-item")
+    year = metadata_set[0].get_text()
+    years.append(year)
+    length = metadata_set[1].get_text()
+    lengths.append(length)
+    rating_year = metadata_set[2].get_text()
+    rating_years.append(rating_year)
+
+    # Scrape the IMDB_rating
+    imdb = float(container.find('span', class_= "ipc-rating-star--rating").get_text())
+    imdb_ratings.append(imdb)
+
+    # Scrape the votes
+    vote_text = container.find('span', class_='ipc-rating-star--voteCount').get_text(strip=True)
+    vote = vote_text.strip("()")
+    votes.append(vote)
+
+    # Scrape the Metasocre
+    m_scroe = int(container.find("span", class_= "sc-b0901df4-0 bXIOoL metacritic-score-box").get_text())
+    metascores.append(m_scroe)
+
+    # Scrape the centent
+    content = container.find('div', class_= "ipc-html-content-inner-div").get_text()
+    contents.append(content)
+
+    # Scrape Each movie Metadata 
+    link = container.find('a', class_= "ipc-title-link-wrapper")['href']
+    link = "http://www.imdb.com" + link
+    metadata_scrape(link)
     
 
 
@@ -146,68 +182,69 @@ for year_url in years_url:
         # '&sort=num_votes,desc&page=' + page)
 
         # Select all the 50 movie containers from a single page
-        mv_containers_1 = page_html.find_all('div', class_ = 'ipc-metadata-list-summary-item__tc')
-        mv_containers_2 = page_html.find_all('div', class_ = 'ipc-metadata-list-summary-item__c')
+        # mv_containers_1 = page_html.find_all('div', class_ = 'ipc-metadata-list-summary-item__tc')
+        # mv_containers_2 = page_html.find_all('div', class_ = 'ipc-metadata-list-summary-item__c')
 
-        # For every movie of these 50 top 25
-        for container in mv_containers_1:
-            # Scrape the name
-            name = container.find('h3', class_ = 'ipc-title__text').get_text()
-            names.append(name)
-            print(name)
-            # Scrape the metadata
-            # metadata_set = container.find_all('span', class_ = 'sc-b189961a-8 hCbzGp dli-title-metadata-item')
-            metadata_set = container.find_all('span', class_ = "sc-ab348ad5-8 cSWcJI dli-title-metadata-item")
-            year = metadata_set[0].get_text()
-            years.append(year)
-            length = metadata_set[1].get_text()
-            lengths.append(length)
-            rating_year = metadata_set[2].get_text()
-            rating_years.append(rating_year)
+        mv_containers = page_html.find_all('li', class_ = 'ipc-metadata-list-summary-item')
+        print(len(mv_containers))
+        for container in mv_containers:
+            scrape_mv(container)
+            # # Scrape the name
+            # name = container.find('h3', class_ = 'ipc-title__text').get_text()
+            # names.append(name)
+            # print(name)
+            # # Scrape the metadata
+            # # metadata_set = container.find_all('span', class_ = 'sc-b189961a-8 hCbzGp dli-title-metadata-item')
+            # metadata_set = container.find_all('span', class_ = "sc-ab348ad5-8 cSWcJI dli-title-metadata-item")
+            # year = metadata_set[0].get_text()
+            # years.append(year)
+            # length = metadata_set[1].get_text()
+            # lengths.append(length)
+            # rating_year = metadata_set[2].get_text()
+            # rating_years.append(rating_year)
 
-            # Scrape the IMDB_rating
-            imdb = float(container.find('span', class_= "ipc-rating-star--rating").get_text())
-            imdb_ratings.append(imdb)
+            # # Scrape the IMDB_rating
+            # imdb = float(container.find('span', class_= "ipc-rating-star--rating").get_text())
+            # imdb_ratings.append(imdb)
 
-            # Scrape the votes
-            vote_text = container.find('span', class_='ipc-rating-star--voteCount').get_text(strip=True)
-            vote = vote_text.strip("()")
-            votes.append(vote)
+            # # Scrape the votes
+            # vote_text = container.find('span', class_='ipc-rating-star--voteCount').get_text(strip=True)
+            # vote = vote_text.strip("()")
+            # votes.append(vote)
 
-            # Scrape the Metasocre
-            m_scroe = int(container.find("span", class_= "sc-b0901df4-0 bXIOoL metacritic-score-box").get_text())
-            metascores.append(m_scroe)
+            # # Scrape the Metasocre
+            # m_scroe = int(container.find("span", class_= "sc-b0901df4-0 bXIOoL metacritic-score-box").get_text())
+            # metascores.append(m_scroe)
 
-            # Scrape the centent
-            content = container.find('div', class_= "ipc-html-content-inner-div").get_text()
-            contents.append(content)
+            # # Scrape the centent
+            # content = container.find('div', class_= "ipc-html-content-inner-div").get_text()
+            # contents.append(content)
 
-            # Scrape Each movie Metadata 
-            link = container.find('a', class_= "ipc-title-link-wrapper")['href']
-            link = "http://www.imdb.com" + link
-            metadata_scrape(link)
-
-names = []
-
-years = []
-lengths = []
-rating_years = []
-
-imdb_ratings = []
-metascores = []
-votes = []
-contents = []
-
-# 'genres': genres,
+            # # Scrape Each movie Metadata 
+            # link = container.find('a', class_= "ipc-title-link-wrapper")['href']
+            # link = "http://www.imdb.com" + link
+            # metadata_scrape(link)
+        
 
 
-movie_ratings = pd.DataFrame({'movie': names,
-'year': years,
-'length': lengths,
-'US certificates': rating_years,
-'imdb': imdb_ratings,
-'metascore': metascores,
-'votes': votes,
+
+
+
+
+movie_ratings = pd.DataFrame(
+{   'movie': names,
+    'year': years,
+    'length': lengths,
+    'genres': genres,
+    'US certificates': rating_years,
+    'imdb': imdb_ratings,
+    'metascore': metascores,
+    'votes': votes,
+    'reviews': reviews,
+    'directors': directors,
+    'writers': writers,
+    'stars': stars,
+    'contents': contents
 })
 print(movie_ratings.info())
 movie_ratings.head(10)
