@@ -8,6 +8,7 @@ class db_manager:
 
     CONN = None
     CURSOR = None
+    db = None
 
     # Configure logging
     logging.basicConfig(
@@ -44,6 +45,9 @@ class db_manager:
 
     def use_db(self, db_name):
         self.CURSOR.execute(f"use {db_name};")
+        logging.info(f"Using database: {db_name}")
+        self.db = db_name
+
 
 
     def initial_db(self,db_name):
