@@ -1,3 +1,5 @@
 import db_api
 
-db_api.initial_db("imdb")
+db = db_api.db_manager()
+db.initial_db("imdb")
+db.use_db("imdb")
