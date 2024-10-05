@@ -1,39 +1,23 @@
-# app.py
-import mysql.connector
-import os
+import web_script
+import logging
+import pandas as pd
 
-# Fetch MySQL connection details from environment variables
-MYSQL_HOST = os.getenv('MYSQL_HOST')
-MYSQL_PORT = os.getenv('MYSQL_PORT')
-MYSQL_USER = os.getenv('MYSQL_USER')
-MYSQL_PASSWORD = os.getenv('MYSQL_PASSWORD')
-MYSQL_DATABASE = os.getenv('MYSQL_DATABASE')
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,  # Set logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(),  # Print to console (stdout)
+        # logging.FileHandler("app.log")  # Optionally log to a file named app.log
+    ]
+)
 
-# Connect to the MySQL database
-try:
-    connection = mysql.connector.connect(
-        host=MYSQL_HOST,
-        port=MYSQL_PORT,
-        user=MYSQL_USER,
-        password=MYSQL_PASSWORD,
-        database=MYSQL_DATABASE
-    )
+test = web_script.imdb_script()
 
-    if connection.is_connected():
-        print(f"Successfully connected to MySQL database '{MYSQL_DATABASE}'")
-        cursor = connection.cursor()
-        cursor.execute("SHOW TABLES;")
-        tables = cursor.fetchall()
-        if tables:
-            print("Tables in the database:")
-            for table in tables:
-                print(table)
-        else:
-            print("No tables found in the database.")
-except mysql.connector.Error as err:
-    print(f"Error: {err}")
-# finally:
-#     if connection.is_connected():
-#         cursor.close()
-#         connection.close()
-#         print("MySQL connection closed.")
+test = test.web_scrape()
+
+pd.set_option('display.max_rows', 100)  # Default is 60
+pd.set_option('display.max_columns', 20)  # Default is 20
+
+print(test)
+

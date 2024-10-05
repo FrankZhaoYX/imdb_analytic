@@ -1,0 +1,12 @@
+In the context of database operations using libraries like MySQL Connector for Python, the method conn.commit() is used to save all changes made during the current transaction to the database. Here’s a detailed explanation:
+
+Explanation of conn.commit()
+
+	1.	Transaction Control:
+	•	Databases often support transactions, which are a series of operations performed as a single logical unit of work. A transaction ensures that either all operations succeed or none at all, maintaining database integrity.
+	•	When you perform operations like INSERT, UPDATE, or DELETE, those changes are not immediately applied to the database. Instead, they are held in a temporary state until you explicitly commit them.
+	2.	Persisting Changes:
+	•	Calling conn.commit() finalizes all the changes made during the transaction. This means that all changes made to the database since the last commit are saved permanently.
+	•	If you don’t call commit(), any changes made will be lost if the connection is closed or if an error occurs.
+	3.	Rollback Capability:
+	•	If an error occurs after some changes have been made but before commit() is called, you can call conn.rollback() to undo all changes made during the transaction. This helps ensure the database remains in a consistent state.
