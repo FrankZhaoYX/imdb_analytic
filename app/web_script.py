@@ -52,26 +52,35 @@ class imdb_script:
         # Scrape the Director
         # director_raw = mv_info.find('a', class_='ipc-metadata-list-item__list-content-item ipc-metadata-list-item__list-content-item--link')
         # print(director_raw.get_text())
-        director_raw = raw[0].find_all('a', class_="ipc-metadata-list-item__list-content-item ipc-metadata-list-item__list-content-item--link")
-        director_set = [tmp.get_text() for tmp in director_raw]
+        try:
+            director_raw = raw[0].find_all('a', class_="ipc-metadata-list-item__list-content-item ipc-metadata-list-item__list-content-item--link")
+            director_set = [tmp.get_text() for tmp in director_raw]
+        except:
+            director_set=""
         # print(director_set)
         self.directors.append(director_set)
 
         # Scrape the Writer
-        writer_raw = raw[1].find_all('a', class_="ipc-metadata-list-item__list-content-item ipc-metadata-list-item__list-content-item--link")
-        writer_set = [tmp.get_text() for tmp in writer_raw]
+        try:
+            writer_raw = raw[1].find_all('a', class_="ipc-metadata-list-item__list-content-item ipc-metadata-list-item__list-content-item--link")
+            writer_set = [tmp.get_text() for tmp in writer_raw]
+        except:
+            writer_set = ""
         # print(writer_set)
         self.writers.append(writer_set)
 
 
         # Scrape the Stars
-        star_raw = raw[2].find_all('a', class_="ipc-metadata-list-item__list-content-item ipc-metadata-list-item__list-content-item--link")
-        star_set = [tmp.get_text() for tmp in star_raw]
+        try:
+            star_raw = raw[2].find_all('a', class_="ipc-metadata-list-item__list-content-item ipc-metadata-list-item__list-content-item--link")
+            star_set = [tmp.get_text() for tmp in star_raw]
+        except:
+            star_set=""
         # print(star_set)
         self.stars.append(star_set)
 
         # Screape the number of reviews
-        reviews_raw = mv_info.find('ul', class_= "ipc-inline-list sc-3243f83b-0 lazyWW baseAlt", attrs={'data-testid': 'reviewContent-all-reviews'})
+        reviews_raw = mv_info.find('ul', class_= "ipc-inline-list sc-b782214c-0 bllRjU baseAlt", attrs={'data-testid': 'reviewContent-all-reviews'})
         review = reviews_raw.find_all('span', class_='score')
         # print(review[0].get_text())
         self.reviews.append(review[0].get_text())
@@ -86,9 +95,15 @@ class imdb_script:
         metadata_set = container.find_all('span', class_ = "sc-ab348ad5-8 cSWcJI dli-title-metadata-item")
         year = metadata_set[0].get_text()
         self.years.append(year)
-        length = metadata_set[1].get_text()
+        try:
+            length = metadata_set[1].get_text()
+        except:
+            length = "NA"
         self.lengths.append(length)
-        rating_year = metadata_set[2].get_text()
+        try:
+            rating_year = metadata_set[2].get_text()
+        except:
+            rating_year = "NA"
         self.rating_years.append(rating_year)
 
         # Scrape the IMDB_rating
@@ -101,7 +116,10 @@ class imdb_script:
         self.votes.append(vote)
 
         # Scrape the Metasocre
-        m_scroe = int(container.find("span", class_= "sc-b0901df4-0 bXIOoL metacritic-score-box").get_text())
+        try:
+            m_scroe = int(container.find("span", class_= "sc-b0901df4-0 bXIOoL metacritic-score-box").get_text())
+        except:
+            m_scroe = 0
         self.metascores.append(m_scroe)
 
         # Scrape the centent
@@ -116,41 +134,42 @@ class imdb_script:
 
 
     def web_scrape(self):
-        # For every year in the interval 2000-2022
-        for year_url in self.years_url:
-            # For every page in the interval 1-4
-            for page in self.pages:
-                if self.request_count > 0:
-                    break
-                start_time = time.time()
-                # Make a get request
-                url = 'https://www.imdb.com/search/title?release_date=' + year_url + '&sort=num_votes,desc&page=' + page
-                # Parse the content of the request with BeautifulSoup
-                page_html = self.bs4_parser(url)
+        # # For every year in the interval 2000-2022
+        # for year_url in self.years_url:
+        # For every page in the interval 1-4
+        # for page in self.pages:
+        # if self.request_count > 0:
+        #     break
+        start_time = time.time()
+        # Make a get request
+        url = 'https://www.imdb.com/search/title?release_date=' + self.year_url + '&sort=num_votes,desc&page='
+        logging.info(url)
+        # Parse the content of the request with BeautifulSoup
+        page_html = self.bs4_parser(url)
 
-                # Pause the loop
-                sleep(randint(8,15))
+        # Pause the loop
+        sleep(randint(8,15))
 
-                # Monitor the requests
-                self.request_count += 1
-                elapsed_time = time.time() - start_time
-                logging.info('Request:{}; Frequency: {} requests/s'.format(self.request_count, self.request_count/elapsed_time))
-                # clear_output(wait = True)
+        # Monitor the requests
+        self.request_count += 1
+        elapsed_time = time.time() - start_time
+        logging.info('Request:{}; Frequency: {} requests/s'.format(self.request_count, self.request_count/elapsed_time))
+        # clear_output(wait = True)
 
-                # # Throw a warning for non-200 status codes
-                # if response.status_code != 200:
-                #     warn('Request: {}; Status code: {}'.format(requests, response.status_code))
+        # # Throw a warning for non-200 status codes
+        # if response.status_code != 200:
+        #     warn('Request: {}; Status code: {}'.format(requests, response.status_code))
 
-                # Break the loop if the number of requests is greater than expected
-                if self.request_count > 200:
-                    logging.info('Number of requests was greater than expected.')
-                    break
+        # # Break the loop if the number of requests is greater than expected
+        # if self.request_count > 200:
+        #     logging.info('Number of requests was greater than expected.')
+        #     break
 
-                mv_containers = page_html.find_all('li', class_ = 'ipc-metadata-list-summary-item')
-                # print(len(mv_containers))
-                for container in mv_containers:
-                    self.scrape_mv(container)
-                    break
+        mv_containers = page_html.find_all('li', class_ = 'ipc-metadata-list-summary-item')
+        # print(len(mv_containers))
+        for container in mv_containers:
+            self.scrape_mv(container)
+            # break
 
         movie_raw = pd.DataFrame(
         {   'movie': self.names,
@@ -169,7 +188,7 @@ class imdb_script:
         })
         return movie_raw
 
-    def __init__(self):
+    def __init__(self,year):
         self.names = []
         self.years = []
         self.lengths = []
@@ -183,8 +202,8 @@ class imdb_script:
         self.writers = []
         self.stars = []
         self.reviews=[]
-        self.years_url = [str(i) for i in range(2000,2022)]
-        self.pages = [str(i) for i in range(1,10)]
+        self.year_url = year
+        # self.pages = [str(i) for i in range(1,10)]
         # Preparing the monitoring of the loop
         self.request_count = 0
         self.runtimes=[]

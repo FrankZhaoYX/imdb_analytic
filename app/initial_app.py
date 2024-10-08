@@ -25,38 +25,41 @@ def main():
     US_certificates varchar(10) NOT NULL,
     imdb float NOT NULL,
     metascore int NOT NULL,
-    votes int NOT NULL,
+    votes varchar(10) NOT NULL,
     reviews varchar(10) NOT NULL,
     directors varchar(255) NOT NULL,
     writers varchar(255) NOT NULL,
     stars varchar(255) NOT NULL,
     contents varchar(255) NOT NULL
     );"""
-    db_manager.create_table(sql_tmp,"bronze_dataset")
+    # db_manager.create_table(sql_tmp,"bronze_dataset")
 
-    logging.info("table bronze_dataset is created")
-
-    imdb_scrape_driver = web_script.imdb_script()
-    imdb_raw = imdb_scrape_driver.web_scrape()
-    logging.info(imdb_raw.info())
-    for i, row in imdb_raw.iterrows():
-        # sql = "INSERT INTO imdb.bronze_dataset VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
-        sql = "INSERT INTO imdb.movie_raw_db VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
-        tuple_transformed = ()
-        for column in imdb_raw.columns:
-            if isinstance(row[column],list):
-                tmp_value = ""
-                print(row[column])
-                for tmp in row[column]:
-                    tmp_value += tmp +', '
-                tuple_transformed +=(tmp_value,)
-            else:
-                tuple_transformed += (row[column],)
-            print(f"Column: {column}, Value: {row[column]}, Data Type: {type(row[column])}")
-        print("-------")
-        print(tuple_transformed)
-        db_manager.insert_table(sql,tuple_transformed)
-        db_manager.CONN.commit()
+    # logging.info("table bronze_dataset is created")
+    # finish 2020
+    years_url = [str(i) for i in range(2021,2022)]
+    for year in years_url:
+        logging.info(f"Scraping the {year}")
+        imdb_scrape_driver = web_script.imdb_script(year)
+        imdb_raw = imdb_scrape_driver.web_scrape()
+        logging.info(imdb_raw.info())
+        for i, row in imdb_raw.iterrows():
+            # sql = "INSERT INTO imdb.bronze_dataset VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
+            sql = "INSERT INTO imdb.bronze_dataset VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
+            tuple_transformed = ()
+            for column in imdb_raw.columns:
+                if isinstance(row[column],list):
+                    tmp_value = ""
+                    # print(row[column])
+                    for tmp in row[column]:
+                        tmp_value += tmp +', '
+                    tuple_transformed +=(tmp_value,)
+                else:
+                    tuple_transformed += (row[column],)
+                # print(f"Column: {column}, Value: {row[column]}, Data Type: {type(row[column])}")
+            # print("-------")
+            # print(tuple_transformed)
+            db_manager.insert_table(sql,tuple_transformed)
+            db_manager.CONN.commit()
 
 if __name__ == "__main__":
     main()
