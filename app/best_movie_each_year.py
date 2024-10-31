@@ -6,7 +6,7 @@ db_manager.use_db("imdb")
 
 # dump bronze functions to a silver_raw
 
-sql_query = "SELECT * FROM bronze_dataset where Metascore > 0;"
+sql_query = "Create Table best_movie_each_year as SELECT ,MAX(metascore) FROM silver_dataset WHERE Metascore > 0;"
 db_manager.CURSOR.execute(sql_query)
 
 # Fetch all rows from the executed query

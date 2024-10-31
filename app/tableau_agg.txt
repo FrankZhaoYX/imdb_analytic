@@ -1,0 +1,10 @@
+Agg1:
+SELECT a.movie, a.year, a.imdb 
+FROM silver_dataset a
+JOIN (
+    SELECT b.year, MAX(b.imdb) AS max_imdb
+    FROM silver_dataset b
+    GROUP BY b.year
+) AS max_table 
+ON a.year = max_table.year AND a.imdb = max_table.max_imdb
+
