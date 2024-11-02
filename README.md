@@ -15,5 +15,5 @@ Because In the bronze table, all the TV-seris data metascore is 0. In this case,
 Silver data set total __487__
 
 
-# Step 4: Extract more silver table for future analytic:
-Silver table: Best_movie_each_year, distribute_by_genres
+# Step 4: Using Tableau to analyze the project
+Using Tableau to analytze the dataset and generate a simple dashboard.
