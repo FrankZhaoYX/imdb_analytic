@@ -1,5 +1,10 @@
 # IMDB Data Analysis project using Python, MySQL and Tableau
-##
+
+### Summary
+- This project used BeautifulSoup to mine movie metadata from the IMDb website, offering valuable experience in static web scraping and handling anti-scraping measures. Additionally, Tableau was used to visualize key insights from the raw dataset, providing a practical exercise in data extraction and analytics.
+
+<img src="imdb_analytic.jpg?raw=true"/>
+
 
 ### 1. Main Techniques
 
@@ -95,3 +100,46 @@
     );"""
     db_manager.create_table(sql_tmp,"silver_dataset")
 ```
+
+- **Docker** – Used for containerizing the environment, ensuring consistent and isolated setups for both the MySQL database and the Python application. The `docker-compose.yml` file below demonstrates a multi-container setup:
+
+    ```yaml
+    version: '3.8'
+
+    services:
+      mysql:
+        image: mysql:8.0                    # Use MySQL 8.0 image
+        container_name: mysql_server
+        environment:
+          MYSQL_ROOT_PASSWORD: admin        # Set a secure password
+          MYSQL_DATABASE: IMDB_db           # Create a database named 'IMDB_db'
+          MYSQL_USER: admin                 # Create a user named 'admin'
+          MYSQL_PASSWORD: admin             # Password for 'admin'
+        volumes:
+          - mysql_data:/var/lib/mysql       # Persist MySQL data
+        ports:
+          - "3306:3306"
+
+      python-app:
+        build: ./app                        # Build the Python app using the Dockerfile
+        container_name: IMDB_analysis_project
+        volumes:
+          - ./app:/usr/src/app              # Mount the local app directory
+        working_dir: /usr/src/app
+        depends_on:
+          - mysql                           # Ensure MySQL starts first
+        environment:
+          MYSQL_HOST: mysql
+          MYSQL_PORT: 3306
+          MYSQL_USER: root
+          MYSQL_PASSWORD: admin
+          MYSQL_DATABASE: IMDB_db
+
+    volumes:
+      mysql_data:
+    ```
+
+This setup configures MySQL and a Python application service, with data persistence and environment variables for seamless integration. The `depends_on` setting ensures MySQL is ready before the Python app initializes, providing an efficient and reproducible project environment.
+
+
+
