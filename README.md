@@ -1,4 +1,9 @@
 # IMDB Data Analysis project using Python, MySQL and Tableau
+![MySQL Badge](https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white)
+![Pandas Badge](https://img.shields.io/badge/Pandas-2C2D72?style=for-the-badge&logo=pandas&logoColor=white)
+![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
+![Beautiful Soup Badge](https://img.shields.io/badge/Beautiful_Soup-blue?style=for-the-badge)
+![Tableau Badge](https://img.shields.io/badge/Tableau-E97627?style=for-the-badge&logo=Tableau&logoColor=white)
 
 ### Summary
 - This project used BeautifulSoup to mine movie metadata from the IMDb website, offering valuable experience in static web scraping and handling anti-scraping measures. Additionally, Tableau was used to visualize key insights from the raw dataset, providing a practical exercise in data extraction and analytics.
