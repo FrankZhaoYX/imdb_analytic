@@ -5,6 +5,7 @@
 
 <img src="imdb_analytic.jpg?raw=true"/>
 
+Inspire from Medium Article [IMDB Data Analysis project using Python, MySQL and Tableau](https://medium.com/@anitateladevalapalli777/imdb-data-analysis-project-using-python-mysql-and-tableau-758b7d0021db)
 
 ### 1. Main Techniques
 
